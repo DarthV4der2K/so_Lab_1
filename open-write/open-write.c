@@ -26,7 +26,7 @@ int main(int argc, char* argv[]) {
      * using bitwise ORs
      */
     int fd = open("test.txt", O_CREAT | O_TRUNC | O_WRONLY, S_IRUSR | S_IWUSR);
-    if (fd < 0) {
+    if (fd < 0) {   
         perror("open error");
         return EXIT_FAILURE;
     }
