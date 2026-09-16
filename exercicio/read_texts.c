@@ -2,12 +2,11 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-// #include <stdio.h>
-
 #define SIZE 64
 
 int main(){
     int fd = open("texts.bin", O_RDONLY);
+    if(fd == -1) return EXIT_FAILURE;
 
     char texto[SIZE];
 
@@ -17,22 +16,20 @@ int main(){
     int register_read = 0;
     int register_id = 0;
     while(1){
+
         register_read = read(fd, &register_id, sizeof(int));
         bytes_read = read(fd, texto + read_done, SIZE - read_done);
-
         
-        if(bytes_read < 0) return EXIT_FAILURE;
+        if((bytes_read < 0) || (register_read < 0)) return EXIT_FAILURE;
         if(register_read == 0) break;
-        if(bytes_read == 0) break;
         
         int bytes_writen = 0;
         int write_done = 0;
 
-        // printf("-->%d\n", register_id);
+        if(write(1, &register_id, sizeof(int)) == -1) return EXIT_FAILURE;
 
-
-        write(1, &register_id, sizeof(int));
         while((bytes_writen = write(1, texto + write_done, bytes_read - read_done - bytes_writen)) > 0){
+            if(bytes_writen == -1) return EXIT_FAILURE;
             write_done += bytes_writen;
         }
 
@@ -40,8 +37,8 @@ int main(){
         
     }
 
-    close(fd);
-
-    return 0;
+    if(close(fd) == -1) return EXIT_FAILURE;
+    
+    return EXIT_SUCCESS;
 }
 
