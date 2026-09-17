@@ -31,10 +31,12 @@ int main(void) {
         "treino iniciado",
         "treino terminado"};
 
-    for (int i = 0; i < 3; i++) {
+    int text_count = sizeof(text) / sizeof(text[0]);
+
+    for (int i = 0; i < text_count; i++) {
         char buffer[BUFFER_SIZE] = {0};
 
-        strncpy(buffer, text[i], 63);
+        strncpy(buffer, text[i], BUFFER_SIZE - 1);
 
         if (bytes_written(fd, buffer, BUFFER_SIZE) < 0) {
             perror("write error");

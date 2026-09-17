@@ -31,14 +31,19 @@ int main(void) {
         "treino iniciado",
         "treino terminado"};
 
-    int tempo[] = {0, 15, 3600};
+    int timestamps[] = {0, 15, 3600};
 
-    for (int i = 0; i < 3; i++) {
+    int text_count = sizeof(text) / sizeof(text[0]);
+
+    for (int i = 0; i < text_count; i++) {
         char buffer[BUFFER_SIZE] = {0};
 
-        strncpy(buffer, text[i], 63);
+        strncpy(buffer, text[i], BUFFER_SIZE - 1);
 
-        bytes_written(fd, &tempo[i], sizeof(int));
+        if (bytes_written(fd, &timestamps[i], sizeof(timestamps[i])) < 0) {
+            perror("write error");
+            return EXIT_FAILURE;
+        }
 
         if (bytes_written(fd, buffer, BUFFER_SIZE) < 0) {
             perror("write error");
