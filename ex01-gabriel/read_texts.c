@@ -30,9 +30,20 @@ int main(void) {
     }
 
     char buffer[BUFFER_SIZE + 1];
-    ssize_t nbytes;
 
-    while ((nbytes = bytes_read(fd, buffer, BUFFER_SIZE)) > 0) {
+    while (1) {
+        ssize_t nbytes = bytes_read(fd, buffer, BUFFER_SIZE);
+
+        if (nbytes == 0) {
+            break;
+        }
+
+        if (nbytes < 0 || nbytes != BUFFER_SIZE) {
+            perror("read error");
+            close(fd);
+            return EXIT_FAILURE;
+        }
+
         buffer[nbytes] = '\0';
         printf("%s\n", buffer);
     }

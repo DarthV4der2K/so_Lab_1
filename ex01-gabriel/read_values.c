@@ -32,9 +32,28 @@ int main(void) {
     int val;
     char buffer[BUFFER_SIZE + 1];
 
-    while (bytes_read(fd, &val, sizeof(int)) == sizeof(int) &&
-           bytes_read(fd, buffer, BUFFER_SIZE) == BUFFER_SIZE) {
+    while (1) {
+        ssize_t res_val = bytes_read(fd, &val, sizeof(val));
+        
+        if (res_val == 0) {
+            break;
+        }
+
+        if (res_val < 0 || res_val != sizeof(val)) {
+            perror("read error");
+            close(fd);
+            return EXIT_FAILURE;
+        }
+
+        ssize_t res_text = bytes_read(fd, buffer, BUFFER_SIZE);
+        if (res_text != BUFFER_SIZE) {
+            perror("read error");
+            close(fd);
+            return EXIT_FAILURE;
+        }
+
         buffer[BUFFER_SIZE] = '\0';
+        
         printf("%d | %s\n", val, buffer);
     }
 
